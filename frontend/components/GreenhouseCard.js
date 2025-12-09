@@ -20,7 +20,10 @@ import {
   sendActuatorCommand,
   getActuatorsByGreenhouse,
 } from "../services/apiClient";
-import { getAuth } from "firebase/auth";
+
+// [FIX] Import 'auth' from your local wrapper, NOT 'getAuth' from the SDK
+import { auth } from "../services/firebase"; 
+
 import FavoriteHours from "./favoriteHours";
 
 const screenWidth = Dimensions.get("window").width;
@@ -90,7 +93,8 @@ const ActuatorSwitch = ({ label, actuatorId }) => {
   const pollingRef = useRef(null);
   const isMounted = useRef(true); // Safety ref
 
-  const auth = getAuth();
+  // [FIX] Use the auth object directly. 
+  // In Demo mode, this holds the Mock User. In Prod, it holds the Real User.
   const userId = auth.currentUser?.uid;
 
   useEffect(() => {
@@ -99,10 +103,10 @@ const ActuatorSwitch = ({ label, actuatorId }) => {
   }, []);
 
   const fetchActuatorState = async () => {
-    if (!isMounted.current) return; // Prevent fetch if unmounted
+    if (!isMounted.current) return; 
     try {
       const { data: commands } = await getCommandsByActuator(actuatorId);
-      if (!isMounted.current) return; // Prevent state update if unmounted
+      if (!isMounted.current) return; 
 
       const sorted = commands.sort((a, b) => new Date(b.issued_at) - new Date(a.issued_at));
       let isActive = false;
@@ -131,16 +135,11 @@ const ActuatorSwitch = ({ label, actuatorId }) => {
   };
 
   // -----------------------------
-  // Polling Logic (OPTIMIZED)
+  // Polling Logic
   // -----------------------------
   useEffect(() => {
-    fetchActuatorState(); // initial fetch
-    
-    // --- OPTIMIZATION: Changed from 2000ms to 10000ms ---
-    // Fetching every 2 seconds was flooding your network log.
-    // 10 seconds is plenty for a UI status update.
+    fetchActuatorState(); 
     pollingRef.current = setInterval(fetchActuatorState, 10000); 
-    
     return () => clearInterval(pollingRef.current);
   }, [actuatorId]);
 
@@ -158,11 +157,14 @@ const ActuatorSwitch = ({ label, actuatorId }) => {
                 setTimeLeft(null);
             }
 
-            sendActuatorCommand({
-              actuator_id: actuatorId,
-              command: "off",
-              issued_by_user_id: userId,
-            });
+            // Fire "OFF" command automatically when timer ends
+            if (userId) {
+              sendActuatorCommand({
+                actuator_id: actuatorId,
+                command: "off",
+                issued_by_user_id: userId,
+              });
+            }
             return null;
           }
           return prev - 1000;
@@ -173,6 +175,11 @@ const ActuatorSwitch = ({ label, actuatorId }) => {
   }, [isOn, timeLeft]);
 
   const handleToggle = () => {
+    if (!userId) {
+      console.error("Attempted toggle without user ID");
+      return; 
+    }
+
     if (!isOn) {
       setModalVisible(true);
     } else {
@@ -189,6 +196,7 @@ const ActuatorSwitch = ({ label, actuatorId }) => {
 
   const handleStart = async () => {
     if (!userId) return console.error("Firebase User NOT authenticated!");
+    
     setTimeLeft(selectedMinutes * 60000);
     setIsOn(true);
     setModalVisible(false);
@@ -302,12 +310,11 @@ const GreenhouseCard = ({ greenhouse, onPress }) => {
   }, [greenhouse.id]);
 
   return (
-    // --- CRITICAL FIX: collapsable={false} ---
     <TouchableOpacity 
       style={styles.card} 
       onPress={onPress} 
       activeOpacity={0.85}
-      collapsable={false} // Prevents crash when navigating away
+      collapsable={false} 
     >
       <Image
         source={{ uri: getGreenhouseImage(greenhouse.id) }}

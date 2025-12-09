@@ -10,7 +10,7 @@ import {
   ScrollView,
   TouchableOpacity
 } from "react-native";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword } from "../services/authWrapper";
 import { auth } from "../services/firebase";
 
 // Receive `onLoginSuccess` as a prop

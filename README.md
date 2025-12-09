@@ -118,6 +118,8 @@ To replicate this project locally without the live hardware sensors, follow thes
 
 * **Git** to clone the repository.
 
+* **API Keys:** You will need accounts for [Firebase](https://firebase.google.com/) and [Visual Crossing Weather](https://www.visualcrossing.com/).
+
 ### 🔧 Installation
 
 **1. Clone the repository:**
@@ -126,7 +128,7 @@ git clone https://github.com/rodel-bfr/smart-greenhouse-react-native-node.git
 cd smart-greenhouse-react-native-node
 ```
 
-**2. Backend Setup**
+**2. Backend Setup (Database)**
 
 1. Open **XAMPP Control Panel** and start **Apache** AND **MySQL**.
     * **Note**: Apache is required to access phpMyAdmin.
@@ -137,33 +139,58 @@ cd smart-greenhouse-react-native-node
 
 4. Import the greenhouse_db.sql file (located in backend/demo_db/) into this new database.
 
-5. Open a terminal and navigate to the backend folder:
+5. Create a `.env` file in the `backend/` folder:
+```test
+PORT=5000
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=
+DB_NAME=greenhouse_db
+```
+
+6. Open a terminal, navigate to the backend folder, and install dependencies:
 ```bash
 cd backend
 npm install
 ```
 
-6. Start the Demo Server (This initializes the API in simulation mode):
+7. Start the Demo Server (This initializes the API in simulation mode):
 ```bash
 node demo_server.js
 ```
 
-7. You should see a green checkmark confirming the database connection is OK.
+8. You should see a green checkmark confirming the database connection is OK.
 
 **3. Frontend Setup**
 
-1. Open a new terminal window and navigate to the frontend folder:
+1. Create a file named `.env` in the `frontend/` root.
+
+2. Add your API keys (use the template below):
+```text
+# Firebase Config (Get these from your Firebase Console)
+EXPO_PUBLIC_FIREBASE_API_KEY=your_api_key_here
+EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+EXPO_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+EXPO_PUBLIC_FIREBASE_APP_ID=your_app_id
+
+# Weather API (Get free key from Visual Crossing)
+EXPO_PUBLIC_WEATHER_API_KEY=your_weather_key_here
+```
+
+3. Open a new terminal window, navigate to the frontend folder, and install dependencies:
 ```bash
 cd frontend
 npm install
 ```
 
-2. Start the Expo development server:
+4. Start the Expo development server:
 ```bash
 npx expo start
 ```
 
-3. Connect your Phone:
+5. Connect your Phone:
 
 * You will see a large QR Code in your terminal.
 
@@ -171,11 +198,13 @@ npx expo start
 
 * iOS: Open the standard Camera app and scan the QR code to open Expo Go.
 
+    * **Note:** If you see a "Connection Failed" screen, ensure your phone and computer are on the same Wi-Fi, and verify the IP address in `frontend/services/config.js`.
+
 **4. Troubleshooting:**
 
 * The app attempts to auto-detect your computer's IP address.
 
-* If you see a red "Connection Failed" screen on your phone, open frontend/services/config.js and manually update the HARDCODED_IP constant to match your computer's local IP (e.g., 192.168.1.x).
+* If you see a red "Connection Failed" screen on your phone, open `frontend/services/config.js` and manually update the HARDCODED_IP constant to match your computer's local IP (e.g., 192.168.1.x).
 
 ---
 

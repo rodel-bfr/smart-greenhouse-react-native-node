@@ -37,15 +37,15 @@ export const API_BASE_URL = DEMO_MODE ? LOCAL_URL : PROD_URL;
 // 🔑 EXTERNAL SERVICES CONFIGURATION
 // =================================================================
 // Visual Crossing Weather API Key
-// NOTE: This key is explicitly provided here to ensure the portfolio demo 
-// functions immediately for reviewers without requiring .env configuration.
-// IN PRODUCTION: This value would be securely injected via environment 
-// variables (e.g., process.env.WEATHER_API_KEY) in the CI/CD pipeline.
-// For this demo, we hardcode it here
-// You can get a free API key from https://www.weatherapi.com/
-// Replace the string below with your actual API key
-// Example: export const WEATHER_API_KEY = "YOUR_ACTUAL_API
-export const WEATHER_API_KEY = "MEFU4GCBW8YWKWKGE423V7K5Z";
+// Loaded from .env file for security.
+// If the variable is missing, the app should gracefully degrade (or use Demo Mode).
+// You can get a free API key from https://www.visualcrossing.com/
+// Follow instructions in the README to set up your .env file.
+export const WEATHER_API_KEY = process.env.EXPO_PUBLIC_WEATHER_API_KEY || "";
+
+if (!WEATHER_API_KEY && !DEMO_MODE) {
+  console.warn("⚠️ Weather API Key is missing in .env! Live weather data will fail.");
+}
 
 console.log(`[App Config] Mode: ${DEMO_MODE ? "DEMO (Local)" : "PRODUCTION"}`);
 console.log(`[App Config] API URL: ${API_BASE_URL}`);

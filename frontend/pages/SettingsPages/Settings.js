@@ -12,7 +12,7 @@ import {
   ChevronRightIcon,
   BugReportIcon,
 } from "../../assets/settings-icons/icons";
-import { signOut } from "firebase/auth";
+import { signOut } from "../../services/authWrapper";
 import { auth } from "../../services/firebase";
 import { useSafeNavigation } from "../../hooks/useSafeNavigation";
 
