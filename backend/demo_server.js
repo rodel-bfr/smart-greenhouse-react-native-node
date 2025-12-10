@@ -5,9 +5,17 @@
 import { createConnection } from "mysql2/promise";
 import dotenv from "dotenv";
 
-// 1. Force Demo Mode ON
+// 1. Force Demo Mode ON & Load .env if it exists
 process.env.DEMO_MODE = "true";
 dotenv.config();
+
+// 2. [FIX] FORCE DEFAULTS if .env is missing
+// This ensures the rest of the app (scheduler, db.js) sees these values
+if (!process.env.DB_HOST) process.env.DB_HOST = 'localhost';
+if (!process.env.DB_USER) process.env.DB_USER = 'root';
+if (!process.env.DB_PASSWORD) process.env.DB_PASSWORD = '';
+if (!process.env.DB_NAME) process.env.DB_NAME = 'greenhouse_db';
+if (!process.env.PORT) process.env.PORT = '5000';
 
 console.log("\n***************************************************");
 console.log("* 🚀 STARTING BYTESTORM BACKEND (DEMO MODE)     *");
@@ -16,8 +24,6 @@ console.log("***************************************************");
 // =========================================================
 // 🔇 CONSOLE NOISE FILTER (Recruiter Friendly Mode)
 // =========================================================
-// This overrides console.error to hide ugly SQL stack traces
-// if the recruiter forgets to turn on XAMPP.
 const originalConsoleError = console.error;
 
 console.error = function (...args) {
@@ -26,13 +32,11 @@ console.error = function (...args) {
     return a?.toString() || "";
   }).join(" ");
 
-  // If it's a database connection error, show a small warning instead of a wall of text
   if (errorString.includes("ECONNREFUSED") || errorString.includes("connect ECONNREFUSED")) {
     process.stdout.write("\x1b[33m ⚠️  [Runtime Blocked] Request failed: Database unreachable (Check XAMPP)\x1b[0m\n");
-    return; // Stop the full stack trace from printing
+    return;
   }
 
-  // Pass everything else through normally
   originalConsoleError.apply(console, args);
 };
 
@@ -47,14 +51,15 @@ process.on('unhandledRejection', (reason, promise) => {
 // =========================================================
 
 
-// 2. PRE-FLIGHT CHECK: Test Database Connection
+// 3. PRE-FLIGHT CHECK: Test Database Connection
 const checkDatabase = async () => {
   try {
+    // Now we can just use process.env because we forced the defaults above
     const connection = await createConnection({
-      host: process.env.DB_HOST || 'localhost',
-      user: process.env.DB_USER || 'root',
-      password: process.env.DB_PASSWORD || '',
-      database: process.env.DB_NAME || 'greenhouse_db',
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
     });
     
     await connection.ping();
@@ -64,20 +69,25 @@ const checkDatabase = async () => {
     console.log("✅ [Check] Demo Mode: ENABLED");
     console.log("---------------------------------------------------");
     
-    // 3. Start the Server only after checks
+    // 4. Start the Server only after checks
     await import("./server.js");
 
   } catch (error) {
-    if (error.code === 'ECONNREFUSED') {
+    if (error.code === 'ECONNREFUSED' || error.code === 'ER_ACCESS_DENIED_ERROR') {
       console.log("\n\x1b[41m\x1b[37m ❌ CRITICAL ERROR: DATABASE UNREACHABLE \x1b[0m");
       console.log("\x1b[33m"); // Yellow text
-      console.log("The backend cannot connect to MySQL.");
-      console.log("1. Open XAMPP Control Panel.");
-      console.log("2. Click 'Start' next to MySQL.");
+      
+      if (error.code === 'ER_ACCESS_DENIED_ERROR') {
+         console.log("Access Denied. Check your DB_USER and DB_PASSWORD defaults.");
+      } else {
+         console.log("The backend cannot connect to MySQL.");
+         console.log("1. Open XAMPP Control Panel.");
+         console.log("2. Click 'Start' next to MySQL.");
+      }
+      
       console.log("3. Restart this terminal.");
       console.log("\x1b[0m"); // Reset color
       
-      // We still load the server so the App doesn't crash completely (ConnectionError screen will show)
       console.log("⚠️  Starting server anyway to allow App 'Connection Error' screen to work...");
       console.log("---------------------------------------------------\n");
       await import("./server.js");

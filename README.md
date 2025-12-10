@@ -139,7 +139,8 @@ cd smart-greenhouse-react-native-node
 
 4. Import the greenhouse_db.sql file (located in backend/demo_db/) into this new database.
 
-5. Create a `.env` file in the `backend/` folder:
+5. **(Optional)** Create a `.env` file in the `backend/` folder:
+    * *Skip this step if your MySQL uses the default user `root` with no password.*
 ```test
 PORT=5000
 DB_HOST=localhost
@@ -163,9 +164,11 @@ node demo_server.js
 
 **3. Frontend Setup**
 
-1. Create a file named `.env` in the `frontend/` root.
+1. **(Optional)** Create a file named `.env` in the `frontend/` root.
+    * *Skip this step to run in **Demo Mode** (Simulated Auth & Weather).*
 
-2. Add your API keys (use the template below):
+2. **(Optional)** Add your API keys (use the template below):
+    * *Add keys only if you want to test the live Weather API or real Firebase Auth.*
 ```text
 # Firebase Config (Get these from your Firebase Console)
 EXPO_PUBLIC_FIREBASE_API_KEY=your_api_key_here
@@ -199,6 +202,10 @@ npx expo start
 * iOS: Open the standard Camera app and scan the QR code to open Expo Go.
 
     * **Note:** If you see a "Connection Failed" screen, ensure your phone and computer are on the same Wi-Fi, and verify the IP address in `frontend/services/config.js`.
+
+6. Log in with Demo Credentials: Once the app loads, use these credentials to access the simulation:
+    * **User:** test@test.test
+    * **Password:** test1234
 
 **4. Troubleshooting:**
 
