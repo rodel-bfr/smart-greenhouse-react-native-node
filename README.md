@@ -8,7 +8,7 @@ This repository contains the complete source code for ByteStorm, an IoT-based Sm
 
 ---
 
-## ✨ Key Features
+## Key Features
 
 The mobile application acts as the control center for the greenhouse, offering:
 
@@ -24,7 +24,7 @@ The mobile application acts as the control center for the greenhouse, offering:
 
 ---
 
-## 🛠️ Technologies Used
+## Technologies Used
 
 ### Frontend (My Primary Focus)
 * **React Native (Expo):** Cross-platform mobile development.
@@ -41,7 +41,7 @@ The mobile application acts as the control center for the greenhouse, offering:
 
 ---
 
-## 📸 Application Preview
+## Application Preview
 
 | **Login & Auth** | **Home Dashboard** | **Technical Hub** | **Statistics** | **Settings** |
 | :---: | :---: | :---: | :---: | :---: |
@@ -49,7 +49,7 @@ The mobile application acts as the control center for the greenhouse, offering:
 
 ---
 
-## 🎯 Technical Focus & Architecture
+## Technical Focus & Architecture
 
 While the production version runs on a Linux Cloud VPS (see `cloud/` folder), I re-engineered the backend to allow for **local replication and offline demonstrations**.
 
@@ -65,7 +65,7 @@ While the production version runs on a Linux Cloud VPS (see `cloud/` folder), I 
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 This monorepo contains the work of all 5 departments. My contributions are primarily in `frontend/` and the adaptation logic in `backend/`.
 
@@ -104,11 +104,11 @@ ByteStorm-Project/
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
-### 📋 Prerequisites
+### Prerequisites
 To replicate this project locally without the live hardware sensors, follow these steps.
-### 📋 Prerequisites
+### Prerequisites
 
 * **Node.js** (v18 or higher) installed on your computer.
 
@@ -120,7 +120,7 @@ To replicate this project locally without the live hardware sensors, follow thes
 
 * **API Keys:** You will need accounts for [Firebase](https://firebase.google.com/) and [Visual Crossing Weather](https://www.visualcrossing.com/).
 
-### 🔧 Installation
+### Installation
 
 **1. Clone the repository:**
 ```bash
@@ -215,7 +215,7 @@ npx expo start
 
 ---
 
-## 📄 Documentation Links
+## Documentation Links
 
 * **[Frontend Documentation](./frontend/README.md):** (This file) Overview of the mobile app architecture and features.
 * **[Backend Documentation](./backend/README.md):** API endpoints, database schema, and security protocols.
@@ -225,7 +225,7 @@ npx expo start
 
 ---
 
-## 🎓 Academic Context
+## Academic Context
 
 This project was developed as part of the **Simulated Enterprise** program at **Universitatea Tehnică din Cluj-Napoca (Technical University of Cluj-Napoca)**.
 
